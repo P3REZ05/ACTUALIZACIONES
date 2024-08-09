@@ -299,6 +299,84 @@ def agregar_producto():
     return redirect(url_for('inventario'))
 
 
+#EJEMPLO CATEGORIA 
+
+# Función para agregar una categoría
+@app.route('/agregar_categoria', methods=['POST'])
+def agregar_categoria():
+    nombre_categoria = request.form['nombre_categoria']
+
+    if nombre_categoria:
+        try:
+            cursor = get_db_cursor()
+            sql = "INSERT INTO categoria_producto (nombre_categoria) VALUES (%s)"
+            cursor.execute(sql, (nombre_categoria,))
+            db.commit()
+            cursor.close()
+            flash('Categoría agregada correctamente', 'success')
+        except mysql.connector.Error as err:
+            flash(f'Error al agregar categoría: {err}', 'error')
+
+    return redirect(url_for('inventario'))
+
+# Ruta para buscar productos por categoría
+@app.route('/buscar_por_categoria', methods=['POST'])
+def buscar_por_categoria():
+    categoria_id = request.form.get('categoria_id')
+
+    cursor = get_db_cursor()
+    sql = "SELECT * FROM producto WHERE ID_categoria_producto = %s"
+    cursor.execute(sql, (categoria_id,))
+    productos = cursor.fetchall()
+    cursor.close()
+
+    # Obtener lista de proveedores y categorías para mostrar en la página
+    cursor = get_db_cursor()
+    cursor.execute("SELECT * FROM proveedores")
+    proveedores = cursor.fetchall()
+
+    cursor.execute("SELECT * FROM categoria_producto")
+    categorias = cursor.fetchall()
+    cursor.close()
+
+    return render_template('inventario.html', data=productos, proveedores=proveedores, categorias=categorias)
+
+# Ruta para filtrar productos por cantidad
+@app.route('/filtrar_productos_por_cantidad', methods=['POST'])
+def filtrar_productos_por_cantidad():
+    filtro_cantidad = request.form.get('filtro_cantidad')
+
+    cursor = get_db_cursor()
+
+    # Construir la consulta SQL base
+    sql = "SELECT * FROM producto WHERE 1=1"
+
+    # Aplicar filtro de cantidad
+    if filtro_cantidad:
+        if request.form.get('tipo_filtro') == 'mayor':
+            sql += f" AND stock > {filtro_cantidad}"
+        elif request.form.get('tipo_filtro') == 'menor':
+            sql += f" AND stock < {filtro_cantidad}"
+
+    cursor.execute(sql)
+    productos_filtrados = cursor.fetchall()
+    cursor.close()
+
+    # Obtener lista de proveedores y categorías para mostrar en la página
+    cursor = get_db_cursor()
+    cursor.execute("SELECT * FROM proveedores")
+    proveedores = cursor.fetchall()
+
+    cursor.execute("SELECT * FROM categoria_producto")
+    categorias = cursor.fetchall()
+    cursor.close()
+
+    return render_template('inventario.html', data=productos_filtrados, proveedores=proveedores, categorias=categorias)
+
+
+#FINAL EJEMPLO CATEGORIA
+
+
 
 # Ruta para eliminar productos
 @app.route('/delete_producto/<string:id>')
