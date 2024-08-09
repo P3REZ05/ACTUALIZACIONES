@@ -5,7 +5,6 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 
-
 <h1 class="text-center">COMPRAS - MERCATODO</h1>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -42,11 +41,15 @@
                 <h5 class="card-title">{{ producto.nombre_producto }}</h5>
                 <p class="card-text">Precio: ${{ producto.valor_producto }}</p>
                 <form method="POST" action="{{ url_for('agregar_al_carrito', producto_id=producto.ID_producto) }}">
-                    <div class="form-group">
-                        <input type="number" class="form-control form-control-sm" name="cantidad" value="1" min="1">
-                        <input type="hidden" name="producto_id" value="{{ producto.ID_producto }}">
+                    <div class="form-row align-items-center">
+                        <div class="col-auto">
+                            <input type="number" class="form-control form-control-sm mb-2" name="cantidad" value="1" min="1">
+                            <input type="hidden" name="producto_id" value="{{ producto.ID_producto }}">
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary btn-sm mb-2">Añadir al Carrito</button>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-sm">Añadir al Carrito</button>
                 </form>
             </div>
         </div>
@@ -70,6 +73,7 @@
             <tr>
                 <td>{{ item.nombre_producto }}</td>
                 <td>{{ item.cantidad }}</td>
+                <td>
                     <form method="POST" action="{{ url_for('eliminar_del_carrito', index=loop.index0) }}" style="display:inline;">
                         <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                     </form>

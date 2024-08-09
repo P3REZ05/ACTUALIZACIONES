@@ -29,31 +29,31 @@ def index():
 
 @app.route('/login', methods=['POST'])
 def login():
-        if request.method == 'POST':
+    if request.method == 'POST':
 
-            cursor = db.db.cursor(dictionary=True)
-            username = request.form['username']
-            password = request.form['password']
-            rol = request.form['rol']
+        cursor = db.db.cursor(dictionary=True)
+        username = request.form['username']
+        password = request.form['password']
+        rol = request.form['rol']
 
-            # Utilizamos db.db para obtener la conexión
+        # Utilizamos db.db para obtener la conexión
 
-            if rol == 'empleado':
-                cursor.execute('SELECT * FROM usuarios WHERE Nombre = %s AND cedula = %s', (username, password))
-            else:
-                cursor.execute('SELECT * FROM admin WHERE nombre = %s AND cc = %s', (username, password))
+    if rol == 'empleado':
+        cursor.execute('SELECT * FROM usuarios WHERE Nombre = %s AND cedula = %s', (username, password))
+    else:
+        cursor.execute('SELECT * FROM admin WHERE nombre = %s AND cc = %s', (username, password))
 
-            user = cursor.fetchone()
+    user = cursor.fetchone()
 
-            if user:
-                session['id_usuario'] = user['ID_usuario'] if rol == 'empleado' else user['cc']
-                if rol == 'empleado':
-                    return redirect(url_for('ventas'))
-                else:
-                    return redirect(url_for('dashboard'))
+    if user:
+        session['id_usuario'] = user['ID_usuario'] if rol == 'empleado' else user['cc']
+        if rol == 'empleado':
+            return redirect(url_for('ventas'))
+        else:
+            return redirect(url_for('dashboard'))
 
-            flash('Invalid username or password')
-            return redirect(url_for('index'))
+    flash('Invalid username or password')
+    return redirect(url_for('index'))
 
 
 
@@ -79,7 +79,7 @@ def usuarios():
         insertObject.append(dict(zip(columnNames, record)))
     
     cursor.close()
-    return render_template('usuarios.html', data=insertObject)
+    return render_template('usuarios.html', data=insertObject, title='usuarios')
 
 # Ruta para guardar usuarios en la base de datos
 @app.route('/usuarios', methods=['POST'])
@@ -149,7 +149,7 @@ def mostrar_proveedores():
     
     except mysql.connector.Error as err:
         print(f"Error al obtener proveedores de la base de datos: {err}")
-        return render_template('proveedores.html', data=[])
+        return render_template('proveedores.html', data=[], title='proveedores')
 
 # Ruta para guardar proveedores en la base de datos
 @app.route('/proveedores/guardar', methods=['POST'])
@@ -239,7 +239,7 @@ def inventario():
 
     cursor.close()
 
-    return render_template('inventario.html', data=productos, proveedores=proveedores, categorias=categorias)
+    return render_template('inventario.html', data=productos, proveedores=proveedores, categorias=categorias, title='inventario')
 
 # Ruta para filtrar productos
 @app.route('/filtrar_productos', methods=['POST'])
@@ -299,6 +299,7 @@ def agregar_producto():
     return redirect(url_for('inventario'))
 
 
+
 # Ruta para eliminar productos
 @app.route('/delete_producto/<string:id>')
 def delete_producto(id):
@@ -306,10 +307,11 @@ def delete_producto(id):
     sql = "DELETE FROM producto WHERE ID_producto = %s"
     data = (id,)
     cursor.execute(sql, data)
-    db.commit()
+    database.commit()  # Cambia aquí de `db` a `database`
     cursor.close()
     flash('Producto eliminado correctamente', 'success')
     return redirect(url_for('inventario'))
+
 
 # Ruta para editar productos 
 @app.route('/editar_producto/<string:id>', methods=['POST'])
@@ -332,6 +334,25 @@ def editar_producto_id(id):
             flash('Producto actualizado correctamente', 'success')
         except mysql.connector.Error as err:
             flash(f'Error al actualizar producto: {err}', 'error')
+
+    return redirect(url_for('inventario'))
+
+
+# Ruta para eliminar una categoría
+@app.route('/delete_category', methods=['POST'])
+def delete_category():
+    ID_categoria_producto = request.form['ID_categoria_producto']
+
+    if ID_categoria_producto:
+        try:
+            cursor = get_db_cursor()
+            sql = "DELETE FROM categoria_producto WHERE ID_categoria_producto = %s"
+            cursor.execute(sql, (ID_categoria_producto,))
+            db.commit()
+            cursor.close()
+            flash('Categoría eliminada correctamente', 'success')
+        except mysql.connector.Error as err:
+            flash(f'Error al eliminar categoría: {err}', 'error')
 
     return redirect(url_for('inventario'))
 
@@ -388,7 +409,7 @@ def dashboard():
                         productos_devueltos=productos_devueltos,
                         fecha_especifica=fecha_especifica,
                         total_ventas=total_ventas,
-                        productos_mas_vendidos=productos_mas_vendidos)
+                        productos_mas_vendidos=productos_mas_vendidos, title='Dashboard')
 
 
 
@@ -435,7 +456,7 @@ def dashboard_ventas():
     return render_template('dashboard_ventas.html', 
                         trabajadores=trabajadores, 
                         productos=productos, 
-                        productos_precios=productos_precios)
+                        productos_precios=productos_precios, title='Dashboard Ventas')
 
 
 
@@ -528,7 +549,7 @@ def ventas():
 
     cursor.close()
 
-    return render_template('ventas.html', categorias=categorias, productos=productos, detalles_venta=detalles_venta, selected_categoria_id=selected_categoria_id, search_query=search_query, total_venta=total_venta)
+    return render_template('ventas.html', categorias=categorias, productos=productos, detalles_venta=detalles_venta, selected_categoria_id=selected_categoria_id, search_query=search_query, total_venta=total_venta, title='usuarios')
 
 @app.route('/ventas/editar/<int:id>', methods=['POST'])
 def editar_producto(id):
@@ -708,7 +729,7 @@ def compras():
     proveedores = obtener_proveedores()
     total_compra = calcular_total_compra(session.get('carrito', []))
     
-    return render_template('compras.html', proveedores=proveedores, productos=productos, total_compra=total_compra, carrito=session.get('carrito', []))
+    return render_template('compras.html', proveedores=proveedores, productos=productos, total_compra=total_compra, carrito=session.get('carrito', []), title='compras')
 
 # Función para agregar al carrito
 @app.route('/agregar_al_carrito/<int:producto_id>', methods=['POST'])
@@ -867,7 +888,7 @@ def reembolsos():
             flash('Producto añadido al carrito de devoluciones', 'success')
 
     carrito_devoluciones = session['carrito_devoluciones']
-    return render_template('reembolsos.html', categorias=categorias, productos=productos, carrito_devoluciones=carrito_devoluciones)
+    return render_template('reembolsos.html', categorias=categorias, productos=productos, carrito_devoluciones=carrito_devoluciones, title='Reembolsos')
 
 @app.route('/eliminar_producto_reembolso/<int:index>', methods=['POST'])
 def eliminar_producto_reembolso(index):

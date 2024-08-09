@@ -27,8 +27,8 @@
     </form>
 
     <div class="table-responsive">
-        <table class="table table-bordered">
-            <thead>
+        <table class="table table-bordered table-hover font-weight-bold">
+            <thead class="bg-primary">
                 <tr>
                     <th>Nombre Producto</th>
                     <th>Descripción</th>
@@ -40,7 +40,7 @@
             </thead>
             <tbody>
                 {% for producto in productos %}
-                <tr>
+                <tr class="bg-light">
                     <td>{{ producto.nombre_producto }}</td>
                     <td>{{ producto.descripcion_producto }}</td>
                     <td>{{ producto.valor_producto }}</td>
@@ -62,8 +62,8 @@
 
     <h2 class="my-4">Detalles de Venta</h2>
     <div class="table-responsive">
-        <table class="table table-bordered" id="tabla-ventas">
-            <thead>
+        <table class="table table-bordered font-weight-bold" id="tabla-ventas">
+            <thead class="bg-primary">
                 <tr>
                     <th>ID Venta</th>
                     <th>Nombre Producto</th>
@@ -74,7 +74,7 @@
             </thead>
             <tbody>
                 {% for detalle in detalles_venta %}
-                <tr>
+                <tr class="bg-light ">
                     <td>{{ detalle.ID_venta }}</td>
                     <td>{{ detalle.nombre_producto }}</td>
                     <td>{{ detalle.cantidad }}</td>

@@ -11,8 +11,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <title>#</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>{% block title %}Mi Aplicación{% endblock %}</title>
     <!-- Estilos personalizados -->
 </head>
 <body>
@@ -49,7 +49,7 @@
                 <div class="container-fluid">
                     <!-- Espacio para el texto izquierdo -->
                     <div class="navbar-text">
-                        <a class="nav-link disabled font-weight-bold" href="#" tabindex="-1" aria-disabled="true">Hola, Usuario</a>
+                        <a class="nav-link disabled font-weight-bold" href="#" tabindex="-1" aria-disabled="true">{{ title }}</a>
                     </div>
                     <!-- Imagen alineada a la derecha -->
                     <div class="navbar-text">
@@ -57,13 +57,9 @@
                     </div>
                 </div>
             </nav>
-            <a class="nav-link disabled adminboard text-dark ml-3 font-weight-bold" href="#">DASHBOARD</a>
             <!-- Contenido principal -->
             <div class="container-fluid">
                 {% block content %}
-
-
-
                 {% endblock %}
             </div>
         </div>

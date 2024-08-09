@@ -6,8 +6,8 @@
 
 <div class="container mt-5">
     <h1 class="mb-4">Historial de Ventas</h1>
-    <table class="table table-bordered">
-        <thead>
+    <table class="table table-bordered table-hover">
+        <thead class="bg-primary">
             <tr>
                 <th>ID Venta</th>
                 <th>Fecha de Venta</th>
@@ -17,13 +17,13 @@
         </thead>
         <tbody>
             {% for venta in ventas %}
-            <tr>
+            <tr class="bg-light">
                 <td>{{ venta.ID_venta }}</td>
                 <td>{{ venta.fecha_venta }}</td>
                 <td>{{ venta.total }}</td>
                 <td>
                     <button data-toggle="modal" data-target="#detalleModal{{ venta.ID_venta }}">
-                        <img id="inspectImg" src="{{ url_for('static', filename='img/inspeccionar.png') }}" alt="Detalles">
+                        <i class="icon ion-md-search"></i>
                     </button>
                     
                     <!-- Modal -->
