@@ -16,7 +16,7 @@
                 Añadir Categoría
             </button>
             <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#searchCategoryModal">
-                Buscar Categoría
+                Editar Categoría
             </button>
             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteCategoryModal">
                 Eliminar Categoría
@@ -197,7 +197,9 @@
                         <select class="form-control" name="proveedor">
                             <option value="">Todos</option>
                             {% for proveedor in proveedores %}
-                            <option value="{{ proveedor['ID_proveedor'] }}">{{ proveedor['Nombre_empresa'] }}</option>
+                           
+
+ <option value="{{ proveedor['ID_proveedor'] }}">{{ proveedor['Nombre_empresa'] }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -213,41 +215,102 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Filtrar Productos</button>
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<!-- Modal para eliminar categoría -->
-<div class="modal fade" id="deleteCategoryModal" tabindex="-1" role="dialog" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
+<!-- Modales para categorías -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteCategoryModalLabel">Eliminar Categoría</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="{{ url_for('delete_category') }}" method="POST">
+            <form action="{{ url_for('agregar_categoria') }}" method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCategoryModalLabel">Añadir Categoría</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
                     <div class="form-group">
-                        <label for="ID_categoria_producto">Selecciona la categoría a eliminar</label>
+                        <label for="nombre_categoria">Nombre de la Categoría</label>
+                        <input type="text" class="form-control" name="nombre_categoria" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Añadir Categoría</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="searchCategoryModal" tabindex="-1" role="dialog" aria-labelledby="searchCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="{{ url_for('editar_categoria') }}" method="GET">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="searchCategoryModalLabel">Editar Categoría</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="ID_categoria_producto">Categoría</label>
                         <select class="form-control" name="ID_categoria_producto" required>
                             {% for categoria in categorias %}
                             <option value="{{ categoria['ID_categoria_producto'] }}">{{ categoria['nombre_categoria'] }}</option>
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-danger">Eliminar Categoría</button>
+                    <div class="form-group">
+                        <label for="nuevo_nombre_categoria">Nuevo nombre de la Categoría</label>
+                        <input type="text" class="form-control" name="nuevo_nombre_categoria" required>
                     </div>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Editar Categoría</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
+<div class="modal fade" id="deleteCategoryModal" tabindex="-1" role="dialog" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="{{ url_for('delete_categoria') }}" method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteCategoryModalLabel">Eliminar Categoría</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="ID_categoria_producto">Seleccionar Categoría</label>
+                        <select class="form-control" name="ID_categoria_producto" required>
+                            {% for categoria in categorias %}
+                            <option value="{{ categoria['ID_categoria_producto'] }}">{{ categoria['nombre_categoria'] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm_delete">¿Está seguro de que desea eliminar esta categoría?</label>
+                        <input type="checkbox" name="confirm_delete" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar Categoría</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
