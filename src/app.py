@@ -12,6 +12,7 @@ import pandas as pd
 from docx import Document
 
 
+
 # Configuración
 template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'templates'))
 app = Flask(__name__, template_folder=template_dir)
@@ -26,6 +27,14 @@ app.secret_key = 'your_secret_key'
 def index():
     return render_template('index.html')
 
+
+#lo que paso Danilo
+
+
+
+
+
+#termina lo que me paso danilo
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -61,8 +70,7 @@ def login():
 # Ruta para la gestión de usuarios
 @app.route('/usuarios')
 def usuarios():
-    # if 'ID_admin' not in session:
-    #     return redirect(url_for('index'))
+
 
     cursor = db.db.cursor(dictionary=True)
 
